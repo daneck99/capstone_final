@@ -95,6 +95,45 @@ seatify/
 
 SEATIFY는 AI 감지 서버, Spring Boot 백엔드, React 프론트엔드로 구성되어 있으며, 아래 순서대로 실행하면 됩니다.
 
+### ⚙️ 초기 설정 (최초 1회만)
+```bash
+1. Gradle 설정
+
+IntelliJ에서 seatify-be 프로젝트를 열고, Gradle Wrapper로 프로젝트를 인식하도록 설정합니다.
+
+2. JDK 및 가상환경 설정
+
+seatify-be: JDK 17 이상 설정
+
+seatify-ai: Python 가상환경 생성 및 활성화
+
+
+python -m venv venv
+source venv/bin/activate  # macOS/Linux
+.\venv\Scripts\activate   # Windows
+
+3. 환경 변수 파일 설정
+
+.env.local 파일을 seatify-be 및 seatify-fe에 각각 생성하고 아래 내용을 입력
+
+# 예시 (seatify-be)
+DB_URL=jdbc:mysql://localhost:3306/seatify
+DB_USERNAME=your_username
+DB_PASSWORD=your_password
+GOOGLE_CLIENT_ID=...
+GOOGLE_CLIENT_SECRET=...
+KAKAO_CLIENT_ID=...
+JWT_SECRET=your_jwt_secret
+
+# 예시 (seatify-fe)
+REACT_APP_API_BASE_URL=http://localhost:8080
+
+4. 프론트엔드 종속성 설치 (의존성 충돌 방지)
+
+cd seatify/seatify-fe
+npm install --legacy-peer-deps
+ ``` 
+
 ### 1️⃣ AI 서버 실행 (Flask + YOLOv5)
 
 ```bash
