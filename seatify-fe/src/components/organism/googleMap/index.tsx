@@ -63,6 +63,24 @@ const GoogleMapComponent = () => {
     }
   };
 
+  const generateDummySeats = async () => {
+    try {
+      const res = await fetch('http://localhost:8080/api/seat/generate-dummy', {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${accessToken}`, // 토큰 필요 시
+        },
+      });
+
+      const result = await res.text();
+      console.log('✅ Dummy Seat 생성 결과:', result);
+      alert(result);
+    } catch (err) {
+      console.error('❌ Dummy Seat 생성 실패:', err);
+      alert('서버에서 좌석 생성에 실패했습니다.');
+    }
+  };
+
   const refreshCafeMarkers = async () => {
     try {
       const cafes = await fetchCafesFromDB(accessToken);
@@ -101,7 +119,6 @@ const GoogleMapComponent = () => {
 
   const saveCafesToDB = async (token: string, cafes: any[]) => {
     const res = await fetch('http://localhost:8080/api/cafes', {
-
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -136,7 +153,6 @@ const GoogleMapComponent = () => {
       ],
     });
 
-
     return {
       placeId: place.id,
       name: place.displayName,
@@ -150,6 +166,16 @@ const GoogleMapComponent = () => {
       rating: place.rating?.toString() || '',
     };
   };
+
+  useEffect(() => {
+    if (!accessToken) {
+      console.warn('❌ accessToken 없음. 로그인 페이지로 이동합니다.');
+      if (typeof window !== 'undefined') {
+        window.location.href = '/login';
+      }
+      return;
+    }
+  }, [accessToken]);
 
   useEffect(() => {
     const unload = () => {
@@ -325,35 +351,52 @@ const GoogleMapComponent = () => {
   };
 
   return (
-      <>
-        <div id="map" style={{width: '100%', height: '100vh'}}/>
-        <button
-            onClick={() => {
-              console.log('버튼 눌림');
-              forceRefreshCafes();
-            }}
-            style={{
-              position: 'absolute',
-              top: 20,
-              right: 20,
-              zIndex: 1000,
-              background: '#333',
-              color: 'white',
-              padding: '8px 12px',
-              borderRadius: '4px',
-              border: 'none',
-              cursor: 'pointer', // ✅ 마우스 올렸을 때 포인터로 변경
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.background = '#555'; // ✅ hover 시 색상 변경
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.background = '#333'; // ✅ 원래 색상으로 복원
-            }}
-        >
-          🔄 Google API로 카페 새로 불러오기
-        </button>
-      </>
+    <>
+      <div id="map" style={{ width: '100%', height: '100vh' }} />
+      <button
+        onClick={() => {
+          console.log('버튼 눌림');
+          forceRefreshCafes();
+        }}
+        style={{
+          position: 'absolute',
+          top: 20,
+          right: 20,
+          zIndex: 1000,
+          background: '#333',
+          color: 'white',
+          padding: '8px 12px',
+          borderRadius: '4px',
+          border: 'none',
+          cursor: 'pointer', // ✅ 마우스 올렸을 때 포인터로 변경
+        }}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.background = '#555'; // ✅ hover 시 색상 변경
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.background = '#333'; // ✅ 원래 색상으로 복원
+        }}
+      >
+        🔄 Google API로 카페 새로 불러오기
+      </button>
+      <button
+        onClick={generateDummySeats}
+        style={{
+          position: 'absolute',
+          top: 60, // 기존 버튼 아래에 위치
+          right: 20,
+          zIndex: 1000,
+          background: '#2a2',
+          color: 'white',
+          padding: '8px 12px',
+          borderRadius: '4px',
+          border: 'none',
+          cursor: 'pointer',
+        }}
+      >
+        ➕ 더미 좌석 생성
+      </button>
+    </>
   );
 };
 
