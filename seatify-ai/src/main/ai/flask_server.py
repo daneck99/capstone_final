@@ -71,6 +71,62 @@ def find_nearest_existing_frame(base_time_str, frames_dir="frames", max_attempts
 
     return None, None
 
+def load_calibration_from_aruco(image_path, padding=50):
+    img = cv2.imread(image_path)
+    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    aruco_dict = cv2.aruco.getPredefinedDictionary(cv2.aruco.DICT_4X4_50)
+    detector = cv2.aruco.ArucoDetector(aruco_dict, cv2.aruco.DetectorParameters())
+    corners, ids, _ = detector.detectMarkers(gray)
+
+    if ids is not None and len(ids) >= 4:
+        ref_pts = {id_: corners[i][0].mean(axis=0) for i, id_ in enumerate(ids.flatten()) if id_ in [0, 1, 2, 3]}
+        if len(ref_pts) == 4:
+            pts1 = np.float32([ref_pts[i] for i in range(4)])
+            width, height = 640 + 2 * padding, 480 + 2 * padding
+            pts2 = np.float32([
+                [padding, padding],
+                [padding + 640, padding],
+                [padding + 640, padding + 480],
+                [padding, padding + 480]
+            ])
+            M = cv2.getPerspectiveTransform(pts1, pts2)
+            return pts1.tolist(), pts2.tolist(), M, img, (width, height)
+    raise ValueError("Insufficient ArUco markers.")
+
+def save_calibration(store_id, pts1, pts2):
+    path = os.path.join("calibration", f"store{store_id}.json")
+    os.makedirs("calibration", exist_ok=True)
+    with open(path, "w") as f:
+        json.dump({"pts1": pts1, "pts2": pts2}, f, indent=4)
+
+@app.route('/upload-image', methods=['POST'])
+def upload_image():
+    try:
+        if 'file' not in request.files:
+            return jsonify({"error": "No file uploaded"}), 400
+        store_id = request.args.get("store_id")
+        if not store_id:
+            return jsonify({"error": "store_id is required"}), 400
+
+        file = request.files['file']
+        path = os.path.join("uploads", f"aruco{store_id}.png")
+        os.makedirs("uploads", exist_ok=True)
+        file.save(path)
+
+        pts1, pts2, M, img, size = load_calibration_from_aruco(path)
+        save_calibration(store_id, pts1, pts2)
+        warped = cv2.warpPerspective(img, M, size)
+        warped_path = os.path.join("uploads", f"warped_{store_id}.jpg")
+        cv2.imwrite(warped_path, warped)
+
+        return jsonify({
+            "message": "Calibration completed",
+            "calibration_file": f"calibration/store{store_id}.json",
+            "warped_image": warped_path
+        })
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
 
 @app.route('/detect-frame-run1', methods=['GET'])
 def detect_frame_run1():
