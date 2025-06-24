@@ -34,7 +34,7 @@ const Wrapper = styled.div`
 `;
 
 const LoginPage = () => {
-  const router = ();
+  const router = useRouter();
   const dispatch = useDispatch();
 
   // 카카오 로그인 클릭했을 때
