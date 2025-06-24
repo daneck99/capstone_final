@@ -314,7 +314,7 @@ const CafeDetailInfo = ({ data }: DetailProps) => {
             const distanceScore = 1 / (distance + 0.01); // 0.01은 0 나눔 방지
 
             const score =
-              0.5 * vacantRatio + 0.5 * distanceScore + 0.2 * altViewer;
+              0.5 * vacantRatio + 0.3 * distanceScore + 0.2 * altViewer;
 
             console.log(
               `[거리 체크] 기준 카페: ${currentCafe.name}, 후보: ${
