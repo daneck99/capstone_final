@@ -180,3 +180,14 @@ Spring Boot API: http://localhost:8080
 
 React 프론트: http://localhost:3000
  ``` 
+
+### 초기 데이터 설정
+
+ ```bash
+브라우저에서 http://localhost:3000 접속 후 로그인
+
+카페 불러오기 버튼 클릭
+
+좌석 더미데이터 삽입하기 버튼 클릭
+→ 좌석 배치 및 초기 상태 데이터가 등록됩니다
+ ``` 
