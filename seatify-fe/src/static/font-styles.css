@@ -1,0 +1,24 @@
+@font-face {
+  font-family: 'PretendardExtraBold';
+  src: url('/fonts/Pretendard-ExtraBold.otf');
+}
+
+@font-face {
+  font-family: 'PretendardBold';
+  src: url('/fonts/Pretendard-Bold.otf');
+}
+
+@font-face {
+  font-family: 'PretendardMedium';
+  src: url('/fonts/Pretendard-Medium.otf');
+}
+
+@font-face {
+  font-family: 'PretendardSemiBold';
+  src: url('/fonts/Pretendard-SemiBold.otf');
+}
+
+@font-face {
+  font-family: 'PretendardRegular';
+  src: url('/fonts/Pretendard-Regular.otf');
+}

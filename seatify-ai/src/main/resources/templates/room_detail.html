@@ -1,0 +1,51 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Room Seat Status</title>
+    <meta charset="UTF-8">
+</head>
+<body>
+<h1>좌석 현황 보기</h1>
+
+<table border="1">
+    <thead>
+    <tr>
+        <th>Seat ID</th>
+        <th>minX</th>
+        <th>minY</th>
+        <th>maxX</th>
+        <th>maxY</th>
+        <th>Status</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="seat : ${seats}">
+        <td th:text="${seat.seatID}"></td>
+        <td th:text="${seat.minX}"></td>
+        <td th:text="${seat.minY}"></td>
+        <td th:text="${seat.maxX}"></td>
+        <td th:text="${seat.maxY}"></td>
+        <td th:text="${seat.state}"
+            th:style="${'color:' +
+                (seat.state == 0 ? 'green' :
+                 seat.state == 1 ? 'red' :
+                 seat.state == 2 ? 'orange' :
+                 seat.state == 3 ? 'gray' : 'black')}">
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<h2>좌석 배치도 (SVG)</h2>
+<svg width="800" height="600" style="border: 1px solid #ccc;">
+    <rect th:each="seat : ${seats}"
+          th:attr="x=${seat.minX}, y=${seat.minY}, width=${seat.maxX - seat.minX}, height=${seat.maxY - seat.minY}"
+          th:style="${'fill:' +
+                    (seat.state == 0 ? '#90ee90' :
+                     seat.state == 1 ? '#ff6666' :
+                     seat.state == 2 ? '#ffd966' :
+                     seat.state == 3 ? '#d9d9d9' : '#cccccc')}"
+          stroke="black" />
+</svg>
+
+</body>
+</html>

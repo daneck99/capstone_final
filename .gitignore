@@ -1,0 +1,44 @@
+# IntelliJ IDEA
+.idea/
+*.iml
+
+# Build output
+/out/
+out/
+
+# Compiled class files
+*.class
+
+# Log files
+*.log
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Node.js (seatify-fe 기준)
+node_modules/
+package-lock.json
+
+# Python (혹시 seatify-ai가 python이면)
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+env/
+venv/
+.venv/
+
+# Gradle (seatify-be 기준)
+.gradle/
+build/
+
+# Mac 및 OS 관련
+*.swp
+*.swo
+
+# VSCode (혹시 사용하는 경우)
+.vscode/
+
+# 기타 캐시성 파일
+*.tmp
